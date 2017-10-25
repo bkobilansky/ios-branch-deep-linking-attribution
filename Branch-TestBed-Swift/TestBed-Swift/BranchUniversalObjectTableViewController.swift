@@ -7,7 +7,7 @@
 //
 import UIKit
 
-class BranchUniversalObjectPropertiesTableViewController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate {
+class BranchUniversalObjectTableViewController: UITableViewController, UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate {
     
     // MARK: - Controls
     
@@ -105,9 +105,9 @@ class BranchUniversalObjectPropertiesTableViewController: UITableViewController,
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         switch((indexPath as NSIndexPath).section) {
         case 2 :
-            self.performSegue(withIdentifier: "ShowKeywords", sender: "Keywords")
+            self.performSegue(withIdentifier: "Array", sender: "Keywords")
         case 26 :
-            self.performSegue(withIdentifier: "ShowCustomData", sender: "CustomData")
+            self.performSegue(withIdentifier: "Dictionary", sender: "CustomData")
         default : break
         }
         
@@ -117,37 +117,41 @@ class BranchUniversalObjectPropertiesTableViewController: UITableViewController,
         
         refreshUniversalObject()
         
-        switch segue.identifier! {
-        case "ShowKeywords":
-            let vc = segue.destination as! ArrayTableViewController
-            if let keywords = universalObject["$keywords"] as? [String] {
-                vc.array = keywords
+        if let senderName = sender as? String {
+            switch senderName {
+            case "Keywords":
+                let nc = segue.destination as! UINavigationController
+                let vc = nc.topViewController as! ArrayTableViewController
+                if let keywords = universalObject["$keywords"] as? [String] {
+                    vc.array = keywords
+                }
+                vc.viewTitle = "Keywords"
+                vc.header = "Keyword"
+                vc.placeholder = "keyword"
+                vc.footer = "Enter a new keyword that describes the content."
+                vc.keyboardType = UIKeyboardType.default
+            case "CustomData":
+                let nc = segue.destination as! UINavigationController
+                let vc = nc.topViewController as! DictionaryTableViewController
+                if let customData = universalObject["customData"] as? [String: AnyObject] {
+                    vc.dictionary = customData	
+                }
+                vc.viewTitle = "Custom Data"
+                vc.keyHeader = "Key"
+                vc.keyPlaceholder = "key"
+                vc.keyFooter = ""
+                vc.valueHeader = "Value"
+                vc.valueFooter = ""
+                vc.keyKeyboardType = UIKeyboardType.default
+                vc.valueKeyboardType = UIKeyboardType.default
+            default: break
             }
-            vc.viewTitle = "Keywords"
-            vc.header = "Keyword"
-            vc.placeholder = "keyword"
-            vc.footer = "Enter a new keyword that describes the content."
-            vc.keyboardType = UIKeyboardType.default
-        case "ShowCustomData":
-            let vc = segue.destination as! DictionaryTableViewController
-            if let customData = universalObject["customData"] as? [String: AnyObject] {
-                vc.dictionary = customData
-            }
-            vc.viewTitle = "Custom Data"
-            vc.keyHeader = "Key"
-            vc.keyPlaceholder = "key"
-            vc.keyFooter = ""
-            vc.valueHeader = "Value"
-            vc.valueFooter = ""
-            vc.keyKeyboardType = UIKeyboardType.default
-            vc.valueKeyboardType = UIKeyboardType.default
-        default: break
         }
     }
     
     @IBAction func unwindByCancelling(_ segue:UIStoryboardSegue) { }
     
-    @IBAction func unwindDictionaryTableViewController(_ segue:UIStoryboardSegue) {
+    @IBAction func unwindDictionary(_ segue:UIStoryboardSegue) {
         if let vc = segue.source as? DictionaryTableViewController {
             let customData = vc.dictionary
             universalObject["customData"] = customData as AnyObject?
@@ -160,7 +164,7 @@ class BranchUniversalObjectPropertiesTableViewController: UITableViewController,
         clearAllValuesButton.isEnabled = universalObject.count > 0 ? true : false
     }
     
-    @IBAction func unwindArrayTableViewController(_ segue:UIStoryboardSegue) {
+    @IBAction func unwindArray(_ segue:UIStoryboardSegue) {
         if let vc = segue.source as? ArrayTableViewController {
             let keywords = vc.array
             universalObject["$keywords"] = keywords as AnyObject?
@@ -190,7 +194,7 @@ class BranchUniversalObjectPropertiesTableViewController: UITableViewController,
         return toolbar
     }
     
-    func donePicking() {
+    @objc func donePicking() {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "YYYY-MM-dd"
         let expirationDate = datePicker.date
@@ -212,14 +216,13 @@ class BranchUniversalObjectPropertiesTableViewController: UITableViewController,
         present(alert, animated: true, completion: nil);
     }
     
-    func switchhDidChangeState() {
+    @objc func switchhDidChangeState() {
         refreshUniversalObject()
     }
     
     func textFieldDidEndEditing(_ textField: UITextField) {
         refreshUniversalObject()
     }
-    
     
     func refreshControls() {
         publiclyIndexableSwitch.isOn = true
