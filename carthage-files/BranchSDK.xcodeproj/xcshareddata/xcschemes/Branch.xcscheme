@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "5FC4CF9E2486123F0001E701"
+               BlueprintIdentifier = "E298D0511C73D1B800589D22"
                BuildableName = "Branch.framework"
-               BlueprintName = "Branch-tvOS"
+               BlueprintName = "Branch"
                ReferencedContainer = "container:BranchSDK.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -50,9 +50,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "5FC4CF9E2486123F0001E701"
+            BlueprintIdentifier = "E298D0511C73D1B800589D22"
             BuildableName = "Branch.framework"
-            BlueprintName = "Branch-tvOS"
+            BlueprintName = "Branch"
             ReferencedContainer = "container:BranchSDK.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
